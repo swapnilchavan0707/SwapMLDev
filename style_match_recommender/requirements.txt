@@ -1,0 +1,13 @@
+# Data Foundations
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Machine Learning & Text Processing
+scikit-learn>=1.2.0
+joblib>=1.3.0
+
+# Dashboard & UI
+streamlit>=1.25.0
+
+# Optimization (Optional but recommended for speed)
+scipy>=1.10.0

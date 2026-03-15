@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Shelf | Visual Intelligence Archive</title>
+
+    <style>
+        /* Luxury Editorial Design System */
+        :root {
+            --bg-dark: #0a0a0b;
+            --accent-gold: #c5a358;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #64748b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-dark);
+            background-image: radial-gradient(circle at top right, #1e293b 0%, #0a0a0b 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            /* Forced high-end serif typography */
+            font-family: "Times New Roman", Times, serif !important;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 0 40px;
+        }
+
+        /* Architectural Header */
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 50px 0;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 400;
+            letter-spacing: 15px; /* High-end tracking */
+            text-transform: uppercase;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-size: 0.75rem;
+            margin-top: 20px;
+            color: var(--accent-gold);
+            opacity: 0.9;
+        }
+
+        /* Input Section */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            margin-bottom: 80px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr;
+            gap: 30px;
+            align-items: end;
+        }
+
+        input, select {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--glass-border);
+            color: white;
+            font-family: "Times New Roman", Times, serif !important;
+            padding: 12px 5px;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom-color: var(--accent-gold);
+        }
+
+        select option {
+            background: #1e293b;
+            color: white;
+        }
+
+        button {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--text-main);
+            padding: 15px 20px;
+            font-family: "Times New Roman", Times, serif !important;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+
+        button:hover {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            letter-spacing: 5px;
+        }
+
+        /* Grid & Item Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        .item-card {
+            border: 1px solid var(--glass-border);
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.01);
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .item-name {
+            font-size: 2rem;
+            font-weight: 400;
+            margin: 0 0 15px 0;
+            color: var(--text-main);
+            border-bottom: 1px solid rgba(197, 163, 88, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .meta {
+            font-style: italic;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            text-transform: lowercase;
+            letter-spacing: 1px;
+        }
+
+        .expiry-section {
+            margin-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+        }
+
+        .expiry-number {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .expiry-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 3px 10px;
+            text-transform: uppercase;
+            margin-top: 15px;
+        }
+
+        .delete-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: 0.3s;
+        }
+
+        .delete-link:hover {
+            color: #ef4444;
+            letter-spacing: 2.5px;
+        }
+
+        /* Flash Messages */
+        .flash-container {
+            margin-bottom: 30px;
+            text-align: center;
+            font-style: italic;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+        }
+
+        @media (max-width: 768px) {
+            .input-group { grid-template-columns: 1fr; }
+            .container { padding: 0 20px; margin: 40px auto; }
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Smart Shelf</h1>
+        <div class="subtitle">Automated Curation & Visual Intelligence</div>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for message in messages %}
+            <p>— {{ message }} —</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <section class="glass-card">
+        <form action="/add" method="POST">
+            <div class="input-group">
+                <input type="text" name="name" placeholder="Item Name (e.g., Organic Avocado)" required>
+
+                <select name="category" required>
+                    <option value="" disabled selected>Category Classification</option>
+                    <option value="0">Fruit & Produce</option>
+                    <option value="1">Dairy & Liquids</option>
+                    <option value="2">Meat & Proteins</option>
+                    <option value="3">Vegetables</option>
+                </select>
+
+                <button type="submit">Log Asset</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="grid">
+        {% for item in items %}
+        <div class="item-card">
+            <h3 class="item-name">{{ item['item_name'] }}</h3>
+
+            <div class="meta">// Class: {{ item['category'] }}</div>
+            <div class="meta">// Entry: {{ item['date_added'][:10] }}</div>
+
+            <div class="expiry-section">
+                <span class="expiry-number">{{ item['predicted_expiry'] }}</span>
+                <span class="expiry-label">Days Estimated Life</span>
+            </div>
+
+            <div class="status-badge">Archived</div>
+
+            <div style="text-align: right;">
+                <a href="{{ url_for('delete_item', item_id=item['id']) }}" class="delete-link">
+                    [ Discard Entry ]
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div style="grid-column: 1 / -1; text-align: center; opacity: 0.5; padding: 60px; border: 1px dashed var(--glass-border);">
+            <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem;">
+                Archive Empty. Awaiting initial asset logging.
+            </p>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+
+</body>
+</html>

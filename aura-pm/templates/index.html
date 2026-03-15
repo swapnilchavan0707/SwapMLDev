@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura-PM | Visual Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Aura-PM</h1>
+        <div class="subtitle">Predictive Maintenance & Asset Intelligence</div>
+    </header>
+
+    <section class="machine-card" style="margin-bottom: 40px;">
+        <form action="/add_machine" method="POST" style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 20px;">
+            <input type="text" name="name" placeholder="Asset Name" class="input-field" required>
+            <input type="text" name="model" placeholder="Model Series" class="input-field" required>
+            <button type="submit" class="btn-gold">Register Asset</button>
+        </form>
+    </section>
+
+    <div class="grid">
+        {% for machine in machines %}
+        <div class="machine-card">
+            <div class="machine-name">{{ machine.name }}</div>
+            <div class="stat-row"><span>Series:</span> <span>{{ machine.model }}</span></div>
+
+            <div class="prediction-display">
+                <span class="rul-label">Estimated Remaining Life</span>
+                <span class="rul-value">{{ machine.prediction }}</span>
+                <span class="rul-label">Operational Days</span>
+            </div>
+
+            <div style="height: 120px; margin: 20px 0;">
+                <canvas id="chart-{{ machine.id }}"></canvas>
+            </div>
+
+            <form action="/update_sensor/{{ machine.id }}" method="POST" style="margin-top: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                    <input type="number" step="0.1" name="temp" placeholder="Temp" class="input-field" required>
+                    <input type="number" step="0.1" name="vib" placeholder="Vib" class="input-field" required>
+                    <input type="number" step="0.1" name="press" placeholder="Press" class="input-field" required>
+                </div>
+                <button type="submit" class="btn-gold" style="font-size: 0.7rem;">Update Telemetry</button>
+            </form>
+
+            <script>
+                window["data_{{ machine.id }}"] = {
+                    temp: {{ machine.temp_history | tojson }},
+                    vib: {{ machine.vib_history | tojson }}
+                };
+            </script>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Analytics | Seller Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background-color: #f1f3f6;">
+
+<header>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 2rem; font-weight: bold;">Aura<span style="color: #ffe500;">Insights</span></div>
+        <a href="/" style="color: white; text-decoration: none; border: 1px solid white; padding: 6px 15px; font-weight: bold;">Back to Shop</a>
+    </div>
+</header>
+
+<div class="container" style="padding-top: 30px;">
+
+    <div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 30px;">
+        <div class="machine-card" style="text-align: center; border-bottom: 4px solid #2874f0;">
+            <div style="color: #878787; font-size: 1rem; text-transform: uppercase; font-weight: bold;">Inventory Value</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #212121; margin-top: 5px;">₹{{ total_value }}</div>
+        </div>
+        <div class="machine-card" style="text-align: center; border-bottom: 4px solid #388e3c;">
+            <div style="color: #878787; font-size: 1rem; text-transform: uppercase; font-weight: bold;">Average Margin</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #388e3c; margin-top: 5px;">{{ avg_margin }}%</div>
+        </div>
+        <div class="machine-card" style="text-align: center; border-bottom: 4px solid #fb641b;">
+            <div style="color: #878787; font-size: 1rem; text-transform: uppercase; font-weight: bold;">Total Stock</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fb641b; margin-top: 5px;">{{ total_stock }} units</div>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 2fr 1fr;">
+        <div class="machine-card">
+            <h3 style="margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Market Competitiveness</h3>
+            <div style="height: 350px;">
+                <canvas id="correlationChart"></canvas>
+            </div>
+        </div>
+
+        <div class="machine-card">
+            <h3 style="margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Stock Allocation</h3>
+            <div style="height: 350px;">
+                <canvas id="allocationChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const flipkartBlue = '#2874f0';
+    const amazonOrange = '#fb641b';
+
+    new Chart(document.getElementById('correlationChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ names | tojson }},
+            datasets: [{
+                label: 'Aura Price (₹)',
+                data: {{ aura_prices | tojson }},
+                backgroundColor: flipkartBlue
+            }, {
+                label: 'Market Price (₹)',
+                data: {{ comp_prices | tojson }},
+                backgroundColor: '#d0d0d0'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, ticks: { font: { family: 'Times New Roman' } } },
+                x: { ticks: { font: { family: 'Times New Roman' } } }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('allocationChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ names | tojson }},
+            datasets: [{
+                data: {{ stocks | tojson }},
+                backgroundColor: [flipkartBlue, amazonOrange, '#388e3c', '#232f3e', '#878787']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { font: { family: 'Times New Roman' } } } }
+        }
+    });
+});
+</script>
+</body>
+</html>

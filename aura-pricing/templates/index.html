@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Store | Dynamic Pricing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 2rem; font-weight: bold; letter-spacing: 1px;">Aura<span style="color: #ffe500;">Prime</span></div>
+        <nav>
+            <a href="/" style="color: white; text-decoration: none; margin-right: 20px; font-weight: bold;">Home</a>
+            <a href="/analytics" style="color: white; text-decoration: none; font-weight: bold;">Analytics</a>
+        </nav>
+    </div>
+</header>
+
+<div class="container" style="padding-top: 20px;">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert" style="background: #fff; border: 1px solid #2874f0; padding: 10px; margin-bottom: 20px; color: #2874f0; font-weight: bold; text-align: center;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="machine-card" style="margin-bottom: 30px; border-top: 4px solid #2874f0;">
+        <h2 style="margin-top: 0; font-size: 1.5rem;">Register New Asset</h2>
+        <form action="/add_product" method="POST" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr; gap: 10px;">
+            <input type="text" name="name" placeholder="Item Name" required>
+            <input type="number" step="0.01" name="base_cost" placeholder="Cost (₹)" required>
+            <input type="number" step="0.01" name="competitor_price" placeholder="Market (₹)" required>
+            <input type="number" name="stock" placeholder="Qty" required>
+            <button type="submit" class="btn-gold">Add to Shop</button>
+        </form>
+    </div>
+
+
+    <div class="grid">
+        {% for product in products %}
+        <div class="machine-card">
+            <div class="product-name">{{ product.name }}</div>
+
+            <div style="color: #388e3c; font-size: 0.95rem; font-weight: bold; margin-bottom: 8px;">
+                4.6 ★ <span style="color: #878787; font-weight: normal;">(Market Verified)</span>
+            </div>
+
+            <div class="price-display">
+                <span class="current-price">₹{{ "{:,.2f}".format(product.current_price) }}</span>
+                <span class="comp-price">₹{{ "{:,.2f}".format(product.competitor_price) }}</span>
+                <span style="color: #388e3c; font-size: 0.9rem; font-weight: bold;">AI Optimized</span>
+            </div>
+
+            <div style="margin-bottom: 15px; font-size: 1rem;">
+                {% if product.stock_level < 5 %}
+                    <span style="color: #d32f2f; font-weight: bold;">Only {{ product.stock_level }} units left!</span>
+                {% else %}
+                    <span style="color: #212121;">In Stock: <b>{{ product.stock_level }} units</b></span>
+                {% endif %}
+            </div>
+
+            <div style="height: 100px; margin-bottom: 15px; border: 1px solid #f0f0f0; background: #fafafa;">
+                <canvas id="chart-{{ product.id }}"></canvas>
+            </div>
+
+            <form action="/update_competitor/{{ product.id }}" method="POST" style="border-top: 1px solid #eee; padding-top: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                    <input type="number" step="0.01" name="new_comp_price" placeholder="Market ₹" required>
+                    <input type="number" name="new_stock" placeholder="Stock" required>
+                </div>
+                <button type="submit" class="btn-gold" style="background-color: #232f3e;">Update Market</button>
+            </form>
+
+            <script>
+                window["history_{{ product.id }}"] = {{ product.logs | map(attribute='price') | list | tojson }};
+            </script>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
